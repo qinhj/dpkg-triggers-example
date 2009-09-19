@@ -1,0 +1,5 @@
+triggertest (0.1) example-only; urgency=low
+
+  * Initial Release.
+
+ -- Sean Finney <seanius@debian.org>  Sat, 19 Sep 2009 15:57:48 +0200

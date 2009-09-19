@@ -1,0 +1,3 @@
+update-foo	/usr/bin/
+update-bar	/usr/bin/
+plugin-central	/usr/share/triggertest/plugins/

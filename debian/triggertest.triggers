@@ -1,0 +1,4 @@
+# trigger 1: a filesystem based trigger
+interest /usr/share/triggertest/plugins
+# trigger 2: a general and arbitrarily named trigger
+interest triggertest-should-update-bar

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -eu
+
+# in this example: only activate the trigger on first-time installation
+if [ "$1" = "configure" ] && [ ! "$2" ]; then
+	echo DEBUG: first time install of triggertest-plugin-dpkg-trigger 
+	dpkg-trigger triggertest-should-update-bar
+fi
+
+#DEBHELPER#

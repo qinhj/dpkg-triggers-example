@@ -1,0 +1,49 @@
+Source: triggertest
+Section: misc
+Priority: extra
+Maintainer: Sean Finney <seanius@debian.org>
+Build-Depends: debhelper (>= 7)
+Standards-Version: 3.8.3
+
+Package: triggertest
+Architecture: all
+Depends: ${misc:Depends}
+Description: A sample "consumer" package for illustrating trigger usage
+ This package illustrates how to build a central package in which there
+ is an "update-foo" utility to be run whenever files under the directory
+ /usr/share/triggertest/plugins are updated, and an "update-bar" utility
+ which should be run under more arbitrary/dynamic conditions.
+
+Package: triggertest-plugin-one
+Architecture: all
+Depends: triggertest (>= 0.1), ${misc:Depends}
+Description: A simple "producer" package for illustrating trigger usage
+ This package illustrates how to build a package that activates a
+ trigger for update-foo by shipping files under the monitored directory.
+
+Package: triggertest-plugin-two
+Architecture: all
+Depends: triggertest (>= 0.1), ${misc:Depends}
+Description: A second "producer" package for illustrating trigger usage
+ This package illustrates how to build a package that activates a
+ trigger for update-foo by shipping files under the monitored directory.
+ .
+ This package is effectively the same as triggertest-plugin-one, but
+ can be used to show that processing multiple packages activating the
+ same trigger results in a single run of the trigger
+
+Package: triggertest-plugin-activate
+Architecture: all
+Depends: triggertest (>= 0.1), ${misc:Depends}
+Description: A third "producer" package for illustrating trigger usage
+ This package illustrates how to ship a triggers file in a "producer"
+ package, such that it explicitly activates a trigger when installed
+ without regards to monitored files/directories.
+
+Package: triggertest-plugin-dpkg-trigger
+Architecture: all
+Depends: triggertest (>= 0.1), ${misc:Depends}
+Description: A fourth package for illustrating dynamic trigger usage
+ This package illustrates how to dynamically invoke a trigger from
+ a maintainer script.  In this example the trigger is only invoked on
+ first installs and not upgrades/reconfigurations.

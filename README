@@ -1,0 +1,111 @@
+The Debian Package triggertest
+----------------------------
+
+This package is a dead-simple "triggers in a nutshell".  It shows a few
+different ways that triggers can be used in practice, to hopefully cover
+most of the general use cases for triggers.
+
+
+The purpose of triggers
+----------------------------
+
+Triggers are used to ensure that during the standard package-management
+process certain operations always run, but not more than necessary.  For
+example:
+
+ * during an upgrade many packages might provide updated texinfo(5)
+   documentation, and triggers are used to ensure that update-info-dir(8)
+   is run without having to be run several unnecessary times from the
+   maintainer scripts of package in question.
+
+ * if a system has both apache2 and PHP's apache2 engine installed,
+   apache2 will need to be restarted whenever new php extensions are
+   installed or removed.  Without triggers it would be very disruptive (and
+   inefficient) to explicitly stop and start apache by each PHP extension.
+
+ * update-initramfs(8) should be run once and only once after kernels are
+   updated or certain other packages are installed/upgraded that would 
+   want to have a new initramfs generated.
+
+ * other expensive operations that are desirable to be aggregated and
+   consolidated during installs/upgrades, such as update-texmf(8)
+   or scrollkeeper-update.
+
+
+How triggers work in a nutshell
+----------------------------
+
+Trigger-using packages can be classified in two behavioral categories:
+
+ * Consumers: packages which declare triggers and thus can be "triggered"
+ * Producers: packages which activate triggers (explicitly or implicitly)
+
+When a consumer is triggered, its postinst script is run with the arguments:
+
+	postinst triggered "<trigger1> ... <triggerN>"
+
+i.e. $2 contains an iterable list of activated triggers.  
+
+Note that if a consumer is going to be normally configured (i.e. it is
+also being updated), then no triggering may occur and thus the standard
+control flow of the maintainer scripts should still take care to handle
+this.
+
+A "trigger" is declared for the consumer by shipping a file in
+DEBIAN/triggers (in the case of debhelper based packages,
+./debian/<pkg>.triggers will JDTRT).  Useful RTFM: deb-triggers(5).
+
+Example:
+
+	interest /path/to/a/directory
+	interest my-second-trigger
+
+This declares that the package in question is interested in two triggers.
+
+The first trigger has a leading path separator in its name, which
+instructs dpkg that any filesystem modifications underneath this directory
+by other packages should cause the respective consumer(s) to be triggered.
+
+The second name is completely arbitrary (and also global, so you should
+probably pick something reasonably specific and identifiable), and will
+only cause a trigger to be activated when a producer
+
+  (a) ships its own triggers file with a corresponding 
+      "activate my-second-trigger", or
+  (b) invokes the trigger explicitly in a maintainer script by calling
+      "dpkg-trigger my-second-trigger".
+
+Another perhaps useful RTFM: dpkg-trigger(1).
+
+
+Examples contained in this source package
+----------------------------
+This source package produces a single "consumer" package and a number of
+different "producer" packages.  The consumer is triggered in various ways,
+such as:
+
+  * Filesystem updates to a given directory from any other package
+  * "activate foo" from a producer's triggers file
+  * Activation from a producer's explicit call to dpkg-triggers
+
+In this case the triggers correspond to an "update-foo" and "update-bar"
+command, which do nothing other than echo to the console that they are
+being run.  In practice they'd correspond to updating some kind of database
+or restarting a daemon.
+
+
+More information
+----------------------------
+For more information about triggers, see /usr/share/doc/dpkg/triggers.txt.gz,
+which will make a lot more sense having a working example like this package
+as reference.  Especially useful is "Transition hints for existing packages",
+which can be used if you need to gracefully handle migrating in support for
+triggers across other packages not directly under your control.
+
+
+Corrections, suggestions, etc
+----------------------------
+Are appreciated and should be sent to the author, below.
+
+
+ -- Sean Finney <seanius@debian.org>  Sat, 19 Sep 2009 15:57:48 +0200

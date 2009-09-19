@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -eu
+
+echo DEBUG: triggertest postinst called, $# args: "$@"
+
+if [ "$1" = "configure" ]; then
+  # in the general case, update-foo and update-bar should always be called
+  # when the central package is updated
+  update-foo
+  update-bar
+elif [ "$1" = "triggered" ]; then
+  # since the example ships two triggers, we should determine how to act
+  # based on which trigger was activated.
+  for triggername in $2; do
+    echo DEBUG: processing trigger "'$triggername'"
+    case "$triggername" in
+    "/usr/share/triggertest/plugins")
+      update-foo
+      ;;
+    "triggertest-should-update-bar")
+      update-bar
+      ;;
+    *)
+      echo "unhandled/unknown trigger!"
+      exit 1
+      ;;
+    esac
+  done
+fi
+
+#DEBHELPER#

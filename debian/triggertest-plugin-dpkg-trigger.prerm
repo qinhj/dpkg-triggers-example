@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -eu
+
+# on removal, we should also activate a trigger for run update-bar
+if [ "$1" = "remove" ]; then
+  echo DEBUG: triggertest-plugin-dpkg-trigger is being removed
+  dpkg-trigger triggertest-should-update-bar
+fi
+
+#DEBHELPER#
