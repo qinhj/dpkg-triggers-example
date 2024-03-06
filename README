@@ -109,3 +109,17 @@ Are appreciated and should be sent to the author, below.
 
 
  -- Sean Finney <seanius@debian.org>  Sat, 19 Sep 2009 15:57:48 +0200
+
+
+Quick Start
+----------------------------
+```bash
+sudo apt install -y debhelper
+dpkg-buildpackage -us -b -uc # --no-pre-clean --no-post-clean
+# smoke test
+sudo dpkg -i triggertest_0.1_all.deb
+sudo dpkg -i triggertest-plugin-one_0.1_all.deb
+sudo dpkg -i triggertest-plugin-two_0.1_all.deb
+sudo dpkg -i triggertest-plugin-activate_0.1_all.deb
+sudo dpkg -i triggertest-plugin-dpkg-trigger_0.1_all.deb
+```
