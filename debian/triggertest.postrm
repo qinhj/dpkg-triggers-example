@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+echo DEBUG: triggertest postrm called, $# args: "$@"
+
+#DEBHELPER#
