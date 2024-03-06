@@ -1,0 +1,33 @@
+#!/bin/sh
+
+set -eu
+
+echo DEBUG: plugin-ort postinst called, $# args: "$@"
+
+if [ "$1" = "configure" ]; then
+  # in the general case, update-foo and update-bar should always be called
+  # when the central package is updated
+  :
+elif [ "$1" = "triggered" ]; then
+  # since the example ships two triggers, we should determine how to act
+  # based on which trigger was activated.
+  for triggername in $2; do
+    echo DEBUG: plugin-ort processing trigger "'$triggername'"
+    case "$triggername" in
+    "/usr/lib/libonnxruntime.so")
+      # [X: can't receive?] try dpkg-trigger during postinst(triggered)
+      dpkg-trigger triggertest-should-update-bar
+      # [X: result in cycle] try to install, upgrad or remove file which is part of a package
+      #echo "/usr/lib/libonnxruntime.so triggered in $(date)" >> /usr/share/triggertest/plugins/plugin-one
+      # [Y] handle trigger by oneself
+      echo DEBUG: "Fine, I(plugin-ort) will handle $triggername for U(triggertest)!"
+      ;;
+    *)
+      echo "unhandled/unknown trigger!"
+      exit 1
+      ;;
+    esac
+  done
+fi
+
+#DEBHELPER#

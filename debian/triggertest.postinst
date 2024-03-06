@@ -13,13 +13,16 @@ elif [ "$1" = "triggered" ]; then
   # since the example ships two triggers, we should determine how to act
   # based on which trigger was activated.
   for triggername in $2; do
-    echo DEBUG: processing trigger "'$triggername'"
+    echo DEBUG: triggertest processing trigger "'$triggername'"
     case "$triggername" in
     "/usr/share/triggertest/plugins")
       update-foo
       ;;
     "triggertest-should-update-bar")
       update-bar
+      ;;
+    "/usr/lib/libonnxruntime.so")
+      echo DEBUG: triggertest is glad to see /usr/lib/libonnxruntime.so updated
       ;;
     *)
       echo "unhandled/unknown trigger!"

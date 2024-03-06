@@ -2,3 +2,6 @@
 interest /usr/share/triggertest/plugins
 # trigger 2: a general and arbitrarily named trigger
 interest triggertest-should-update-bar
+# Solution (a): add a filesystem based trigger for onnxruntime
+interest-noawait /usr/lib/libonnxruntime.so
+# Note: require an endline

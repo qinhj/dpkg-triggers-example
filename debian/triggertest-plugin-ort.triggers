@@ -1,0 +1,2 @@
+# Add a filesystem based trigger for onnxruntime
+interest-noawait /usr/lib/libonnxruntime.so

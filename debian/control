@@ -7,7 +7,7 @@ Standards-Version: 3.8.3
 
 Package: triggertest
 Architecture: all
-Depends: ${misc:Depends}
+Depends: triggertest-plugin-depends, ${misc:Depends}
 Description: A sample "consumer" package for illustrating trigger usage
  This package illustrates how to build a central package in which there
  is an "update-foo" utility to be run whenever files under the directory
@@ -47,3 +47,13 @@ Description: A fourth package for illustrating dynamic trigger usage
  This package illustrates how to dynamically invoke a trigger from
  a maintainer script.  In this example the trigger is only invoked on
  first installs and not upgrades/reconfigurations.
+
+Package: triggertest-plugin-depends
+Architecture: all
+Depends: onnxruntime, ${misc:Depends}
+Description: Package for resolve the triggers cycle issue as solution (a)
+
+Package: triggertest-plugin-ort
+Architecture: all
+Depends: onnxruntime, ${misc:Depends}
+Description: Package for resolve the triggers cycle issue as solution (b)

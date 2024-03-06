@@ -123,3 +123,27 @@ sudo dpkg -i triggertest-plugin-two_0.1_all.deb
 sudo dpkg -i triggertest-plugin-activate_0.1_all.deb
 sudo dpkg -i triggertest-plugin-dpkg-trigger_0.1_all.deb
 ```
+
+
+What if "consumer" depends on "producer"?
+----------------------------
+
+The solution is adding one more package "plugin". Then one can:
+
+  (a) let "plugin" depends on "producer", "consumer" depends on "plugin" and
+      interests some files/dirctories of "producer", or
+
+  (b) let "consumer" depends on both "plugin" and "producer", and "plugin"
+      interests some files/dirctories of "producer", then handle "trigger"
+      event just in plugin's postinst.
+
+Note: Why do we need one more "plugin" package? It seems that `dpkg` will
+raise error "cycle found while processing triggers" if "consumer" interesets
+some files/directories which belong to the depended "producer" package.
+
+The main idea of (a) is to create a new package "plugin" and treat "producer"
+as the "plugin" of "consumer". However, it seems that "consumer" can't receive
+new trigger from plugin's postinst. In my poor understanding, this is because
+"dpkg-trigger" only available during "producer"(T) package's "prerm(remove)"
+and "postinst(configure)". Thus, we can't trigger "consumer" from the
+"postinst(triggered)" of the "plugin" package.
