@@ -134,16 +134,14 @@ The solution is adding one more package "plugin". Then one can:
       interests some files/dirctories of "producer", or
 
   (b) let "consumer" depends on both "plugin" and "producer", and "plugin"
-      interests some files/dirctories of "producer", then handle "trigger"
-      event just in plugin's postinst.
+      interests some files/dirctories of "producer", then handle "triggered"
+      just in plugin's postinst or ship to "consumer" by `dpkg-trigger`.
 
-Note: Why do we need one more "plugin" package? It seems that `dpkg` will
-raise error "cycle found while processing triggers" if "consumer" interesets
-some files/directories which belong to the depended "producer" package.
+Note: The main idea is to create a new package "plugin" and treat "producer" as
+the "plugin" of "consumer". Why do we need such a "plugin" package? It seems
+that `dpkg` will raise error "cycle found while processing triggers" if
+"consumer" interest(-noawait) some files/directories which belong to the
+depended "producer" package directly. Is there any other solutions??
 
-The main idea of (a) is to create a new package "plugin" and treat "producer"
-as the "plugin" of "consumer". However, it seems that "consumer" can't receive
-new trigger from plugin's postinst. In my poor understanding, this is because
-"dpkg-trigger" only available during "producer"(T) package's "prerm(remove)"
-and "postinst(configure)". Thus, we can't trigger "consumer" from the
-"postinst(triggered)" of the "plugin" package.
+With solution (b), it's not necessary for "consumer" to always "Depends" on
+"plugin". Sometimes, the "plugin" package could just be "Recommends".

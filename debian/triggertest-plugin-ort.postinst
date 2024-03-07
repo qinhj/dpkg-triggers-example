@@ -4,6 +4,15 @@ set -eu
 
 echo DEBUG: plugin-ort postinst called, $# args: "$@"
 
+trigger_test_b() {
+  # Note: "--no-await" seems necessary
+  if dpkg-trigger --no-await triggertest-b-should-update-bar; then
+    echo "DEBUG: plugin-ort triggertest-b-should-update-bar(trigger activated)"
+  else
+    echo "DEBUG: plugin-ort triggertest-b-should-update-bar(trigger failed: $?)"
+  fi
+}
+
 if [ "$1" = "configure" ]; then
   # in the general case, update-foo and update-bar should always be called
   # when the central package is updated
@@ -15,12 +24,12 @@ elif [ "$1" = "triggered" ]; then
     echo DEBUG: plugin-ort processing trigger "'$triggername'"
     case "$triggername" in
     "/usr/lib/libonnxruntime.so")
-      # [X: can't receive?] try dpkg-trigger during postinst(triggered)
-      dpkg-trigger triggertest-should-update-bar
-      # [X: result in cycle] try to install, upgrad or remove file which is part of a package
-      #echo "/usr/lib/libonnxruntime.so triggered in $(date)" >> /usr/share/triggertest/plugins/plugin-one
-      # [Y] handle trigger by oneself
-      echo DEBUG: "Fine, I(plugin-ort) will handle $triggername for U(triggertest)!"
+      # [Y] try dpkg-trigger
+      trigger_test_b
+      # [?: activated?] try to install/upgrad/remove files
+      #echo "/usr/lib/libonnxruntime.so triggered in $(date)" >> /usr/share/triggertest/plugins/plugin-central
+      # [Y] or just handle trigger by oneself
+      echo DEBUG: "Fine, I(plugin-ort) will handle $triggername for U(triggertest-b)!"
       ;;
     *)
       echo "unhandled/unknown trigger!"

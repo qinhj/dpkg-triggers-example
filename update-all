@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo "$0 has been called with" $@

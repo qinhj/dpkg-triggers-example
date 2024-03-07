@@ -14,6 +14,11 @@ Description: A sample "consumer" package for illustrating trigger usage
  /usr/share/triggertest/plugins are updated, and an "update-bar" utility
  which should be run under more arbitrary/dynamic conditions.
 
+Package: triggertest-b
+Architecture: all
+Depends: triggertest-plugin-ort, onnxruntime, ${misc:Depends}
+Description: A sample "consumer" package to test solution (b)
+
 Package: triggertest-plugin-one
 Architecture: all
 Depends: triggertest (>= 0.1), ${misc:Depends}
@@ -55,5 +60,6 @@ Description: Package for resolve the triggers cycle issue as solution (a)
 
 Package: triggertest-plugin-ort
 Architecture: all
-Depends: onnxruntime, ${misc:Depends}
+Depends: ${misc:Depends}
 Description: Package for resolve the triggers cycle issue as solution (b)
+ This package is only required by triggertest-b

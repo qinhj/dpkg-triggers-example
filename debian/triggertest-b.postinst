@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -eu
+
+echo DEBUG: $0 called, $# args: "$@"
+
+if [ "$1" = "configure" ]; then
+  # in the general case, update-all with foo-b and bar-b should always be
+  # called when the central package is updated
+  update-all foo-b
+  update-all bar-b
+elif [ "$1" = "triggered" ]; then
+  # since the example ships two triggers, we should determine how to act
+  # based on which trigger was activated.
+  for triggername in $2; do
+    echo DEBUG: triggertest-b processing trigger "'$triggername'"
+    case "$triggername" in
+    "/usr/share/triggertest/plugins")
+      update-all foo-b
+      ;;
+    "triggertest-b-should-update-bar")
+      update-all bar-b
+      ;;
+    "/usr/lib/libonnxruntime.so")
+      echo DEBUG: triggertest-b is glad to see /usr/lib/libonnxruntime.so updated
+      ;;
+    *)
+      echo "unhandled/unknown trigger!"
+      exit 1
+      ;;
+    esac
+  done
+fi
+
+#DEBHELPER#
